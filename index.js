@@ -20,6 +20,43 @@ app.get('/users', async function(request, response){
         <pre>${JSON.stringify(users, null, 2)}</pre>`)
 })
 
+app.get('/todos', async function(request, response){
+    const connection = await connectToDB();
+    const [todos] = await connection.query('SELECT * FROM todos');
+    console.log('Todos:', todos);
+
+    await connection.end();
+    return response.send(`
+        <pre>${JSON.stringify(todos, null, 2)}</pre>`)
+})
+app.get('/categories', async function(request, response){
+    const connection = await connectToDB();
+    const [categories] = await connection.query('SELECT * FROM categories');
+    console.log('Categories:', categories);
+
+    await connection.end();
+    return response.send(`
+        <pre>${JSON.stringify(categories, null, 2)}</pre>`)
+})
+
+app.get('/categories/:id', async function(request, response){
+    const connection = await connectToDB();
+    const [categories] = await connection.query(`SELECT * FROM categories WHERE id = ${request.params.id}`);
+
+    await connection.end();
+    return response.send(`
+        <pre>${JSON.stringify(categories, null, 2)}</pre>`)
+})
+
+app.get('/todos/:id', async function(request, response){
+    const connection = await connectToDB();
+    const [todos] = await connection.query(`SELECT * FROM todos WHERE id = ${request.params.id}`);
+
+    await connection.end();
+    return response.send(`
+        <pre>${JSON.stringify(todos, null, 2)}</pre>`)
+})
+
 app.get('/users/:id', async function(request, response){
     const connection = await connectToDB();
     const [users] = await connection.query(`SELECT * FROM users WHERE id = ${request.params.id}`);
