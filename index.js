@@ -1,6 +1,8 @@
 const express = require('express');
 const { connectToDB } = require('./models');
+const userRouter = require('./routes/users');
 const app = express();
+app.use(express.json());
 
 app.get('/', function(request, response){
     response.send('Hello World!');
@@ -10,15 +12,7 @@ app.get('/about', function(request, response){
     response.send('<h2 style="color: skyblue;">About Page</h2>');
 })
 
-app.get('/users', async function(request, response){
-    const connection = await connectToDB();
-    const [users] = await connection.query('SELECT * FROM users');
-    console.log('Users:', users);
-
-    await connection.end();
-    return response.send(`
-        <pre>${JSON.stringify(users, null, 2)}</pre>`)
-})
+app.use('/users', userRouter);
 
 app.get('/todos', async function(request, response){
     const connection = await connectToDB();
@@ -26,8 +20,7 @@ app.get('/todos', async function(request, response){
     console.log('Todos:', todos);
 
     await connection.end();
-    return response.send(`
-        <pre>${JSON.stringify(todos, null, 2)}</pre>`)
+    return response.json(todos);
 })
 app.get('/categories', async function(request, response){
     const connection = await connectToDB();
@@ -35,8 +28,7 @@ app.get('/categories', async function(request, response){
     console.log('Categories:', categories);
 
     await connection.end();
-    return response.send(`
-        <pre>${JSON.stringify(categories, null, 2)}</pre>`)
+    return response.json(categories);
 })
 
 app.get('/categories/:id', async function(request, response){
@@ -44,8 +36,7 @@ app.get('/categories/:id', async function(request, response){
     const [categories] = await connection.query(`SELECT * FROM categories WHERE id = ${request.params.id}`);
 
     await connection.end();
-    return response.send(`
-        <pre>${JSON.stringify(categories, null, 2)}</pre>`)
+    return response.json(categories);
 })
 
 app.get('/todos/:id', async function(request, response){
@@ -53,17 +44,7 @@ app.get('/todos/:id', async function(request, response){
     const [todos] = await connection.query(`SELECT * FROM todos WHERE id = ${request.params.id}`);
 
     await connection.end();
-    return response.send(`
-        <pre>${JSON.stringify(todos, null, 2)}</pre>`)
-})
-
-app.get('/users/:id', async function(request, response){
-    const connection = await connectToDB();
-    const [users] = await connection.query(`SELECT * FROM users WHERE id = ${request.params.id}`);
-
-    await connection.end();
-    return response.send(`
-        <pre>${JSON.stringify(users, null, 2)}</pre>`)
+    return response.json(todos);
 })
 
 app.listen(3000, function(){
