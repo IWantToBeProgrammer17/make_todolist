@@ -1,6 +1,7 @@
 const express = require('express');
 const { connectToDB } = require('./models');
 const userRouter = require('./routes/users');
+const todosRouter = require('./routes/todos');
 const app = express();
 app.use(express.json());
 
@@ -13,15 +14,9 @@ app.get('/about', function(request, response){
 })
 
 app.use('/users', userRouter);
+app.use('/todos', todosRouter);
 
-app.get('/todos', async function(request, response){
-    const connection = await connectToDB();
-    const [todos] = await connection.query('SELECT * FROM todos');
-    console.log('Todos:', todos);
 
-    await connection.end();
-    return response.json(todos);
-})
 app.get('/categories', async function(request, response){
     const connection = await connectToDB();
     const [categories] = await connection.query('SELECT * FROM categories');
@@ -39,13 +34,7 @@ app.get('/categories/:id', async function(request, response){
     return response.json(categories);
 })
 
-app.get('/todos/:id', async function(request, response){
-    const connection = await connectToDB();
-    const [todos] = await connection.query(`SELECT * FROM todos WHERE id = ${request.params.id}`);
 
-    await connection.end();
-    return response.json(todos);
-})
 
 app.listen(3000, function(){
     console.log('Server is running on http://localhost:3000');

@@ -10,3 +10,14 @@ Content-Type: application/json
   "email": "azky@example",
   "password": "azky123"
 }
+###
+POST http://localhost:3000/todos
+Content-Type: application/json
+
+{
+  "title": "Learn Node.js",
+  "description": "Study the basics of Node.js and Express",
+  "is_completed": 0,
+  "category_id": 5
+  "user_id": 1
+}
