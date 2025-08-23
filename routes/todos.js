@@ -17,8 +17,9 @@ router.post('/', async function(request, response){
         description: request.body.description,
         is_completed: request.body.is_completed,
         user_id: request.body.user_id,
-        category_id: request.body.category_id
-    });
+        category_id: request.body.category_id,
+        due_date: request.body.due_date
+    })
     return response.json(createTodo);
 })
 module.exports = router;

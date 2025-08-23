@@ -1,3 +1,4 @@
+const { DB_USER } = require('../config/config');
 const { connectToDB } = require('../models');
 
 class TodosModel {
@@ -17,17 +18,19 @@ class TodosModel {
         return todos;
     }   
     async createTodo(todoData) {
-        const { title, description, is_completed, user_id, category_id } = todoData;
+        const { title, description, is_completed, user_id, category_id, due_date} = todoData;
         const connection = await connectToDB();
 
         const [result] = await connection.query(`
             INSERT INTO 
-                todos (title, description, is_completed, user_id, category_id)
-            VALUES (?, ?, ?, ?, ?)`, 
-            [title, description, is_completed, user_id, category_id]);
-        await connection.end();
+                todos (title, description, is_completed, user_id, category_id, due_date)
+            VALUES (?, ?, ?, ?, ?, ?)`, 
 
-        return result;
+            [title, description, is_completed, user_id, category_id, due_date])
+
+            await connection.end();
+
+            return result;
     }
 }
 module.exports = new TodosModel();

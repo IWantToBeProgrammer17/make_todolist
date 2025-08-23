@@ -15,9 +15,19 @@ POST http://localhost:3000/todos
 Content-Type: application/json
 
 {
-  "title": "Learn Node.js",
+  "title": "Learn Node.js and Express",
   "description": "Study the basics of Node.js and Express",
-  "is_completed": 0,
-  "category_id": 5
-  "user_id": 1
+  "is_completed": null,
+  "user_id": 1,
+  "category_id": 1,
+  "due_date": "2024-12-31"
+  
+}
+
+###
+POST http://localhost:3000/categories
+Content-Type: application/json
+
+{
+  "category_name": "Code"
 }
