@@ -1,3 +1,4 @@
+const { DB_USER } = require('../config/config');
 const { connectToDB } = require('../models');
 
 
@@ -33,6 +34,36 @@ class UsersModel {
             await connection.end();
 
             return result;
+        } 
+    async updateUser(id, userData){
+        const connection = await connectToDB();
+        if(userData.id){
+            delete userData.id;
+        }
+
+        let updateString = '';
+        const values = [];
+
+        Object.keys(userData).forEach(key => {
+            updateString += `${key} = ?,`;
+            values.push(userData[key]);
+        })
+
+        updateString = updateString.slice(0, -1);
+        values.push(id);
+        const [result] = await connection.query(`UPDATE users SET ${updateString} WHERE id = ?`, values);
+
+        return result;
+        
+    }
+    async deleteUser(id){
+        const connection = await connectToDB();
+        
+        const [result] = await connection.query(`DELETE FROM users WHERE id = ?`, [id])
+ 
+        await connection.end();
+ 
+        return result;
     }
 }
 
