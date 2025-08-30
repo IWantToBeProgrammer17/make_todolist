@@ -1,5 +1,6 @@
 const express = require('express');
 const CategoriesModel = require('../models/category.model');
+const categoryModel = require('../models/category.model');
 const router = express.Router();
 
 router.get('/', async function(request, response){
@@ -19,6 +20,21 @@ router.post('/', async function(request, response){
         category_name: request.body.category_name
     })
     return response.json(createCategory);
+})
+
+router.delete('/:id', async function(request, response){
+    const deleteCategory = await categoryModel.deleteCategory(request.params.id);
+
+    response.json({
+        success: deleteCategory.affectedRows > 0
+    })
+})
+
+router.put('/:id', async function(request, response){
+    const updateCategory = await categoryModel.updateCategory(request.params.id, request.body);
+    response.json({
+        success: updateCategory.affectedRows > 0
+    })
 })
 
 module.exports = router;

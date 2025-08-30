@@ -7,3 +7,14 @@ Content-Type: application/json
 {
   "category_name": "Code"
 }
+
+###
+DELETE http://localhost:3000/categories/7
+
+###
+PUT http://localhost:3000/categories/8
+Content-Type: application/json
+
+{
+  "category_name":"vegetables"
+}
