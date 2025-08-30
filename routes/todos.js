@@ -22,5 +22,21 @@ router.post('/', async function(request, response){
     })
     return response.json(createTodo);
 })
+
+router.delete('/:id', async function(request, response){
+    const deleteTodo = await TodosModel.deleteTodo(request.params.id);
+
+    response.json({
+        success: deleteTodo.affectedRows > 0
+    })
+})
+
+router.put('/:id', async function(request, response){
+    const updateTodo = await TodosModel.updateTodo(request.params.id, request.body);
+    response.json({
+        success: updateTodo.affectedRows > 0
+    })
+})
+
 module.exports = router;
 

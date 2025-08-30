@@ -16,3 +16,14 @@ Content-Type: application/json
   "category_id": 1,
   "due_date": "2024-12-31"
 }
+
+###
+DELETE http://localhost:3000/todos/7
+
+###
+PUT http://localhost:3000/todos/8
+Content-Type: application/json
+
+{
+  "title": "memakai dasi"
+}

@@ -30,7 +30,37 @@ class TodosModel {
 
             await connection.end();
 
-            return result;
+            return result;   
+    }
+    async updateTodo(id, todoData){
+        const connection = await connectToDB();
+        if(todoData.id){
+            delete todoData.id;
+        }
+
+        let updateString = '';
+        const values = [];
+
+        Object.keys(todoData).forEach(key => {
+            updateString += `${key} = ?,`;
+            values.push(todoData[key]);
+        })
+
+        updateString = updateString.slice(0, -1);
+        values.push(id);
+        const [result] = await connection.query(`UPDATE todos SET ${updateString} WHERE id = ?`, values);
+
+        return result;
+        
+    }
+    async deleteTodo(id){
+        const connection = await connectToDB();
+        
+        const [result] = await connection.query(`DELETE FROM todos WHERE id = ?`, [id])
+ 
+        await connection.end();
+ 
+        return result;
     }
 }
 module.exports = new TodosModel();
