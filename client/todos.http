@@ -1,11 +1,11 @@
 ###
-GET http://localhost:3000/todos
+GET http://localhost:3000/api/todos
 ###
-GET http://localhost:3000/todos/2
+GET http://localhost:3000/api/todos/8
 ###
 
 ###
-POST http://localhost:3000/todos
+POST http://localhost:3000/api/todos
 Content-Type: application/json
 
 {
@@ -18,10 +18,10 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/todos/7
+DELETE http://localhost:3000/api/todos/1
 
 ###
-PUT http://localhost:3000/todos/8
+PUT http://localhost:3000/api/todos/8
 Content-Type: application/json
 
 {
