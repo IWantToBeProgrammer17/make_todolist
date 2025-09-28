@@ -13,7 +13,7 @@ Content-Type: application/json
   "description": "Study the basics of Node.js and Express",
   "is_completed": null,
   "user_id": 1,
-  "category_id": 1,
+  "category_id": 6,
   "due_date": "2024-12-31"
 }
 

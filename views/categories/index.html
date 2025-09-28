@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Bootstrap demo</title>
+    <title>Categories</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -12,12 +12,80 @@
     />
   </head>
   <body>
-    <h1>Hello, world!</h1>
+    <div class="container mt-3">
+      <h2>Categories</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">No</th>      
+            <th scope="col">Title</th>
+            <th scope="col">Due date</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody id="category-table-body"></tbody>
+      </table>
+    </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
     ></script>
-    <script src="/script.js"></script>
+    
+    <script>
+      function deleteCategory(id) {
+        const isConfirmed = confirm(
+          "Are you sure you want to delete this category?"
+        );
+        
+        if (isConfirmed === true) {
+          fetch(`/api/categories/${id}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).then((response) => {
+            if (response.ok) {
+              alert("Category deleted successfully");
+              getCategories();
+            }
+          });
+        }
+      }
+      function getCategories() {
+        fetch("/api/categories")
+          .then((response) => response.json())
+          .then((response) => {
+            const categoryTableBody = document.getElementById("category-table-body");
+
+            categoryTableBody.innerHTML = "";
+
+            response.forEach((category, index) => {
+              const row = document.createElement("tr");
+
+              row.innerHTML = `
+                    <tr>
+            <th scope="row">${index + 1}</th>
+            <td>${category.category_name}</td>
+            <td>${category.created_at}</td>
+            <td>
+              <button type="button" class="btn btn-danger" onclick="deleteCategory(${
+                category.id
+              })">Delete</button>
+              <button type="button" class="btn btn-warning">Edit</button>
+            </td>
+          </tr>
+                `;
+
+              categoryTableBody.appendChild(row);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fecthing categories:", error);
+          });
+      }
+
+      getCategories();
+    </script>
   </body>
 </html>
