@@ -20,7 +20,13 @@ Content-Type: application/json
   "messages": [
     {
       "role": "user",
-      "content": "diberikan data berikut: [{name: 'Andi', age: 25}, {name: 'Budi', age: 30}, {name: 'Citra', age: 22}, {name: 'Dewi', age: 28}]"
+      "content": "Pelajari dan hapalkan data ini:
+                  Nama; Azky Haekal Alfarizi
+                  Kelas: 9 atau 3 SMP
+                  Sekolah: SMPIT AL-HUSNA
+                  Tempat Tinggal: Kampung Nyangkowek
+                  Hobi: Bermain Game online
+                  Tempat Tanggal Lahir: Cicurug 17 Mei 2011"
     },
     {
       "role": "assistant",
@@ -28,7 +34,7 @@ Content-Type: application/json
     },
     {
       "role": "user",
-      "content": "Siapa yang paling tua?"
+      "content": "Siapa nama saya?"
     }
   ],
   "stream": false

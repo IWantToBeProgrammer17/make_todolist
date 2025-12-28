@@ -1,0 +1,6 @@
+post http://localhost:3000/api/ollama/localhost:11434/api/chat
+Content-Type: application/json
+
+{
+    "content": "hello"
+}
