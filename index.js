@@ -6,6 +6,7 @@ const ollamaRouter = require('./routes/ollama');
 const todosRouter = require('./routes/todos');
 const categoryRouter = require('./routes/categories');
 const authRouter = require('./routes/auth');
+const chatRouter = require('./routes/chatbot');
 const app = express();
 const cors = require('cors');
 const proxy = require('express-http-proxy');
@@ -17,6 +18,7 @@ app.get('/about', function(request, response){
     response.send('<h2 style="color: skyblue;">About Page</h2>');
 })
 app.use(cors());
+app.use('/api/chatbot', chatRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api/users', userRouter);
 app.use('/api/todos', todosRouter);

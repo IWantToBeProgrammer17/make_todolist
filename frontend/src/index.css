@@ -1,1 +1,4 @@
 @import "tailwindcss";
+.btn-gradient-primary {
+  @apply w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-semibold shadow-lg shadow-purple-500/30 transition-all duration-200 hover:shadow-purple-500/50 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2;
+}
