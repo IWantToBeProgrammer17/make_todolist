@@ -5,5 +5,6 @@ POST http://localhost:3000/api/chatbot/chats/1/messages
 Content-Type: application/json
 
 {
-    "prompt": "Hello, who are you?"
+    "prompt": "Hello, what do you do?"
+    
 }

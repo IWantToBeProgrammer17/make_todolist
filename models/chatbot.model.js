@@ -1,7 +1,7 @@
 const { connectToDB } = require('.');
 
 class ChatbotModel {
-    async getChats() {
+    async getChats(userId) {
         
         const connection = await connectToDB();
 

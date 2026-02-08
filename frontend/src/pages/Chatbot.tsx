@@ -28,7 +28,7 @@ export default function ChatbotPage() {
       }),
     }); 
 
-    const responseJson: {data: {id: number; title: string}} = await response.json();
+    const responseJson: {data: {id: number; title: string} } = await response.json();
     const id = responseJson.data.id;
     const title = responseJson.data.title;
 

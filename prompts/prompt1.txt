@@ -1,0 +1,20 @@
+{
+  "data": {
+    "prompt": "Hello, who are you?",
+    "response": "Hello! I am a large language model, trained by Google."
+  }
+}
+
+{
+  "data": {
+    "prompt": "Hello, what is 1 + 1?",
+    "response": "1 + 1 = 2"
+  }
+}
+
+{
+  "data": {
+    "prompt": "Hello, what is your name?",
+    "response": "I do not have a name. I am a large language model, trained by Google."
+  }
+}

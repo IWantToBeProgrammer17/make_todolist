@@ -5,7 +5,7 @@ const { default: axios } = require("axios");
 
 const router = express.Router();
 
-router.get("/chats", async function (request, response) {
+router.get("/chats", async function (req, res) {
   const chatsDb = await ChatbotModel.getChats(1);
 
   const chats = chatsDb.map((chat) => {
@@ -15,24 +15,24 @@ router.get("/chats", async function (request, response) {
     };
   });
 
-  return response.status(200).json({
+  return res.status(200).json({
     data: chats,
   });
 });
-router.post("/chats", async function (request, response) {
+router.post("/chats", async function (req, res) {
   const chatData = {
     user_id: 1,
-    title: request.body.title,
+    title: req.body.title,
   };
 
   const newChat = await ChatbotModel.createChat(chatData);
 
-  return response.status(201).json({
+  return res.status(201).json({
     data: newChat,
   });
 });
-router.get("/chats/:chatid/messages", async function (request, res) {
-  const messages = await ChatbotModel.getChat(request.params.chatid);
+router.get("/chats/:chatid/messages", async function (req, res) {
+  const messages = await ChatbotModel.getChat(req.params.chatid);
 
   return res.json({
     data: messages,
@@ -44,7 +44,7 @@ router.post("/chats/:chatid/messages", async function (req, res) {
   await ChatbotModel.insertMessage({
     chatId: req.params.chatid,
     type: "user",
-    content: prompt
+    content: prompt,
   });
 
   const response = await axios.post(
@@ -77,8 +77,8 @@ router.post("/chats/:chatid/messages", async function (req, res) {
 
   return res.json({
     data: {
-        prompt: prompt,
-        response: contentAI,
+      prompt: prompt,
+      response: contentAI,
     },
   });
 });
