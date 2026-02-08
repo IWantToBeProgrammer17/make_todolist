@@ -6,5 +6,4 @@ Content-Type: application/json
 
 {
     "prompt": "Hello, what do you do?"
-    
 }

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import type { ResponseApiAI, ResponseApiMessages } from "../pages/type";
 
 interface Message {
   id: string;
@@ -6,6 +7,20 @@ interface Message {
   content: string;
   timestamp: Date;
 }
+
+const getChatMessages = async (chatId: string): Promise<Message[]> => {
+  const response = await fetch(`/api/chatbot/chats/${chatId}/messages`);
+  const responseJson: ResponseApiMessages= await response.json();
+
+  return responseJson.data.map((m) => {
+    return {
+      id: m.id.toString(),
+      type: m.type,
+      content: m.content,
+      timestamp: new Date(m.created_at),
+    };
+  });
+};
 
 export default function ChatbotBox(props: { chatId: string }) {
   const [messages, setMessages] = useState<Message[]>([
@@ -38,11 +53,22 @@ export default function ChatbotBox(props: { chatId: string }) {
   };
 
   useEffect(() => {
+    const fetchMessages = async () => {
+      const fetchedMessages = await getChatMessages(props.chatId);
+      setMessages(fetchedMessages);
+    };
+    fetchMessages();
+  }, [props.chatId]);
+
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputValue.trim()) return;
+
+    setIsTyping(true);
+    setInputValue("");
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -52,21 +78,22 @@ export default function ChatbotBox(props: { chatId: string }) {
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    setInputValue("");
-    setIsTyping(true);
 
-    // Simulate bot response
-    setTimeout(() => {
+    const response = await fetch(`/api/chatbot/chats/${props.chatId}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ prompt: inputValue }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const responseJson: ResponseApiAI = await response.json();
+
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: "bot",
-        content:
-          "This is a simulated response. In a real application, this would connect to your AI backend service.",
+        content: responseJson.data.response,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, botMessage]);
       setIsTyping(false);
-    }, 1500);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
