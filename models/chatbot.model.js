@@ -1,3 +1,4 @@
+const moment = require('moment');
 const { connectToDB } = require('.');
 
 class ChatbotModel {
@@ -58,6 +59,27 @@ class ChatbotModel {
 
         return false;
    } 
+   async updateHistoryChat({user_id}) {
+        const connection = await connectToDB();
+    
+        const [checkLimit] = await connection.query(`
+            SELECT id, user_id, last_time_chat, count_chat FROM chat_limits WHERE user_id = ?`,
+            [user_id]
+        );
+        if (checkLimit.length === 0) {
+            await connection.query(`
+                INSERT INTO chat_limits (user_id, last_time_chat, count_chat) VALUES (?, ?, ?)`,
+                [user_id, moment().format('YYYY-MM-DD HH:mm:ss'), 1]
+            );
+        } else {
+            await connection.query(`
+                UPDATE chat_limits SET last_time_chat = ?, count_chat = ? WHERE user_id = ?`,
+                [moment().format('YYYY-MM-DD HH:mm:ss'), 
+                (checkLimit[0]?.count_chat || 0) + 1, 
+                user_id,
+            ]);
+        }
+    }
 }
 
 module.exports = new ChatbotModel;

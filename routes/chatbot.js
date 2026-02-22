@@ -1,7 +1,6 @@
 const express = require("express");
 const ChatbotModel = require("../models/chatbot.model");
-const { GEMINI_API_KEY } = require("../config/config");
-const { default: axios } = require("axios");
+const { generateAIResponse } = require("../services/AI");
 
 const router = express.Router();
 
@@ -47,27 +46,7 @@ router.post("/chats/:chatid/messages", async function (req, res) {
     content: prompt,
   });
 
-  const response = await axios.post(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      contents: [
-        {
-          parts: [
-            {
-              text: prompt,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
-  );
-
-  const contentAI = response.data.candidates[0].content.parts[0].text;
+  const contentAI = await generateAIResponse(prompt);
 
   await ChatbotModel.insertMessage({
     chatId: req.params.chatid,
@@ -75,7 +54,10 @@ router.post("/chats/:chatid/messages", async function (req, res) {
     content: contentAI,
   });
 
+  await ChatbotModel.updateHistoryChat({ user_id: 1 });
+
   return res.json({
+    status: true,
     data: {
       prompt: prompt,
       response: contentAI,
