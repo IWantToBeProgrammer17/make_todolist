@@ -32,7 +32,7 @@ router.post("/chats", async function (req, res) {
   });
 });
 
-router.get('/chats/:chatid', async function (req, res){
+router.get('/chats/:chatId', async function (req, res){
   const chat = await ChatbotModel.getChatById(req.params.chatId);
 
   if (!chat) {
@@ -42,11 +42,12 @@ router.get('/chats/:chatid', async function (req, res){
     });
   }
   return res.status(200).json({
+    status: true,
     data: chat,
   });
 });
 
-router.put('/chats/:chatid', async function (req, res){
+router.put('/chats/:chatId', async function (req, res){
   const chat = await ChatbotModel.getChatById(req.params.chatId);
 
   if (!chat) {
@@ -66,7 +67,7 @@ router.put('/chats/:chatid', async function (req, res){
   });
 });
 
-router.delete('/chats/:chatid', async function (req, res){
+router.delete('/chats/:chatId', async function (req, res){
   const chat = await ChatbotModel.getChatById(req.params.chatId);
 
   if (!chat) {
@@ -84,19 +85,20 @@ router.delete('/chats/:chatid', async function (req, res){
   });
 });
 
-router.get("/chats/:chatid/messages", async function (req, res) {
-  const messages = await ChatbotModel.getChat(req.params.chatid);
+router.get("/chats/:chatId/messages", async function (req, res) {
+  const messages = await ChatbotModel.getChat(req.params.chatId);
 
   return res.json({
+    status: true,
     data: messages,
   });
 });
 
-router.post("/chats/:chatid/messages", async function (req, res) {
+router.post("/chats/:chatId/messages", async function (req, res) {
   const prompt = req.body.prompt;
 
   await ChatbotModel.insertMessage({
-    chatId: req.params.chatid,
+    chatId: req.params.chatId,
     type: "user",
     content: prompt,
   });
@@ -104,7 +106,7 @@ router.post("/chats/:chatid/messages", async function (req, res) {
   const contentAI = await generateAIResponse(prompt);
 
   await ChatbotModel.insertMessage({
-    chatId: req.params.chatid,
+    chatId: req.params.chatId,
     type: "bot",
     content: contentAI,
   });
