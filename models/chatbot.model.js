@@ -1,85 +1,130 @@
-const moment = require('moment');
-const { connectToDB } = require('.');
+const moment = require("moment");
+const { connectToDB } = require(".");
 
 class ChatbotModel {
-    async getChats(userId) {
-        
-        const connection = await connectToDB();
+  async getChats(userId) {
+    const connection = await connectToDB();
 
-        const [chats] = await connection.query(`
-            SELECT * FROM chats WHERE user_id = ?`, 
-            [userId]
-        );
+    const [chats] = await connection.query(
+      `
+            SELECT * FROM chats WHERE user_id = ?`,
+      [userId],
+    );
 
-        await connection.end();
-    
-        return chats;
-        
-    }
-    async createChat(chatData) {
-        const user_id = chatData.user_id;
-        const title = chatData.title || 'New Chat';
+    await connection.end();
 
-        const connection = await connectToDB();
+    return chats;
+  }
+  async updateChat(chatId, data) {
+    const connection = await connectToDB();
+    const [result] = await connection.query(
+      `
+            UPDATE chats SET title = ? WHERE id = ?`,
+      [data.title, chatId],
+    );
+    await connection.end();
+    return result.affectedRows > 0;
+  }
+  async deleteChat(chatId) {
+    const connection = await connectToDB();
+    await connection.query(
+      `
+            DELETE FROM messages WHERE chat_id = ?`,
+      [chatId],
+    );
+    const [result] = await connection.query(
+      `
+            DELETE FROM chats WHERE id = ?`,
+      [chatId],
+    );
+    await connection.end();
+    return result.affectedRows > 0;
+  }
+  async createChat(chatData) {
+    const user_id = chatData.user_id;
+    const title = chatData.title || "New Chat";
 
-        const [result] = await connection.query(`
-            INSERT INTO chats (user_id, title) VALUES (?, ?)`, 
-            [user_id, title]
-        );
-        await connection.end();
-        return {
-            id: result.insertId,
-            user_id,
-            title,
-        };
-    }
-    async getChat(chatId){
-        const connection = await connectToDB();
+    const connection = await connectToDB();
 
-        const [messages] = await connection.query(`
+    const [result] = await connection.query(
+      `
+            INSERT INTO chats (user_id, title) VALUES (?, ?)`,
+      [user_id, title],
+    );
+    await connection.end();
+    return {
+      id: result.insertId,
+      user_id,
+      title,
+    };
+  }
+  async getChatById(chatId) {
+    const connection = await connectToDB();
+
+    const [[chat]] = await connection.query(
+      `
+            SELECT * FROM chats WHERE id = ?`,
+      [chatId],
+    );
+
+    await connection.end();
+
+    return chat || null;
+  }
+  async getChat(chatId) {
+    const connection = await connectToDB();
+
+    const [messages] = await connection.query(
+      `
             SELECT 
-            * FROM messages WHERE chat_id = ?`, 
-            [chatId]
-        );
-        
-        return messages;
-    }
-   async insertMessage({chatId, type, content}) {
-        const connection = await connectToDB();
+            * FROM messages WHERE chat_id = ?`,
+      [chatId],
+    );
 
-        const [insertMessage] = await connection.query(`
+    return messages;
+  }
+  async insertMessage({ chatId, type, content }) {
+    const connection = await connectToDB();
+
+    const [insertMessage] = await connection.query(
+      `
             INSERT INTO messages (chat_id, type, content) 
-            VALUES (?, ?, ?)`, 
-            [chatId, type, content]
-        );
+            VALUES (?, ?, ?)`,
+      [chatId, type, content],
+    );
 
-        if (insertMessage.affectedRows > 1) {
-            return true
-        }
-
-        return false;
-   } 
-   async updateHistoryChat({user_id}) {
-        const connection = await connectToDB();
-    
-        const [checkLimit] = await connection.query(`
-            SELECT id, user_id, last_time_chat, count_chat FROM chat_limits WHERE user_id = ?`,
-            [user_id]
-        );
-        if (checkLimit.length === 0) {
-            await connection.query(`
-                INSERT INTO chat_limits (user_id, last_time_chat, count_chat) VALUES (?, ?, ?)`,
-                [user_id, moment().format('YYYY-MM-DD HH:mm:ss'), 1]
-            );
-        } else {
-            await connection.query(`
-                UPDATE chat_limits SET last_time_chat = ?, count_chat = ? WHERE user_id = ?`,
-                [moment().format('YYYY-MM-DD HH:mm:ss'), 
-                (checkLimit[0]?.count_chat || 0) + 1, 
-                user_id,
-            ]);
-        }
+    if (insertMessage.affectedRows > 1) {
+      return true;
     }
+
+    return false;
+  }
+  async updateHistoryChat({ user_id }) {
+    const connection = await connectToDB();
+
+    const [checkLimit] = await connection.query(
+      `
+            SELECT id, user_id, last_time_chat, count_chat FROM chat_limits WHERE user_id = ?`,
+      [user_id],
+    );
+    if (checkLimit.length === 0) {
+      await connection.query(
+        `
+                INSERT INTO chat_limits (user_id, last_time_chat, count_chat) VALUES (?, ?, ?)`,
+        [user_id, moment().format("YYYY-MM-DD HH:mm:ss"), 1],
+      );
+    } else {
+      await connection.query(
+        `
+                UPDATE chat_limits SET last_time_chat = ?, count_chat = ? WHERE user_id = ?`,
+        [
+          moment().format("YYYY-MM-DD HH:mm:ss"),
+          (checkLimit[0]?.count_chat || 0) + 1,
+          user_id,
+        ],
+      );
+    }
+  }
 }
 
-module.exports = new ChatbotModel;
+module.exports = new ChatbotModel();
